@@ -35,7 +35,7 @@ class ChatClient:
             self.client_socket.connect(self.server_address)
             self.client_name = self.client_socket.recv(1024).decode()  # Receive assigned name
             self.window.title(f"{self.client_name} @ port {self.client_socket.getsockname()[1]}")
-            #receive initial messages from the server (specification of sender important for alignement of text)
+            #Receive initial messages from the server (specification of sender important for alignement of text)
             self.display_message(f"Connected to the server as {self.client_name}.", sender="Server")
         except ConnectionRefusedError:
             self.display_message("Unable to connect to the server. Please try again later.", sender="Server")
@@ -45,6 +45,7 @@ class ChatClient:
         if message:
             self.client_socket.sendall(message.encode())
             self.display_message(f"You: {message}", sender="You")
+            #Removes the text from the entry field, allowing the user to type a new message without manually clearing the previous one
             self.message_entry.delete(0, END)
 
     def receive_messages(self):
