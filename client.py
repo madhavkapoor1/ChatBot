@@ -1,8 +1,17 @@
+# Group#: G4
+# Student Names: Chao-Wu Chu (Kevin Chu), Madhav Kapoor 
+
+
 from tkinter import *
 import socket
 import threading
 
 class ChatClient:
+    """
+    This class implements the chat client.
+    It uses the socket module to create a TCP socket and to connect to the server.
+    It uses the tkinter module to create the GUI for the chat client.
+    """
     def __init__(self, window: Tk):
         self.window = window
 
@@ -31,14 +40,15 @@ class ChatClient:
         self.listen_thread.start()
 
     def connect_to_server(self):
-        try:
-            self.client_socket.connect(self.server_address)
-            self.client_name = self.client_socket.recv(1024).decode()  # Receive assigned name
-            self.window.title(f"{self.client_name} @ port {self.client_socket.getsockname()[1]}")
-            #Receive initial messages from the server (specification of sender important for alignement of text)
-            self.display_message(f"Connected to the server as {self.client_name}.", sender="Server")
-        except ConnectionRefusedError:
-            self.display_message("Unable to connect to the server. Please try again later.", sender="Server")
+        while True:
+            try:
+                self.client_socket.connect(self.server_address)
+                self.client_name = self.client_socket.recv(1024).decode()  # Receive assigned name
+                self.window.title(f"{self.client_name} @ port {self.client_socket.getsockname()[1]}")
+                self.display_message(f"Connected to the server as {self.client_name}.", sender="Server")
+                break  # Exit the loop if connection is successful
+            except ConnectionRefusedError:
+                self.display_message("Unable to connect to the server. Retrying...", sender="System")
 
     def send_message(self, event=None):
         message = self.message_entry.get().strip()
